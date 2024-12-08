@@ -1,0 +1,13 @@
+signal = randi([0 3], 1000, 1);
+BER = zeros(1, 20);
+for SNR = 1:20
+ TxSignal = pskmod(signal, 4, pi/4);
+ RxSignal = awgn(TxSignal, SNR, 'measured');
+ RxSymbols = pskdemod(RxSignal, 4, pi/4);
+ BER(SNR) = sum(signal ~= RxSymbols) / length(signal);
+end
+semilogy(1:20, BER, 'o-');
+xlabel('SNR (dB)');
+ylabel('BER');
+title('BER vs. SNR for 4-PSK Modulation');
+grid on;
