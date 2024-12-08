@@ -1,0 +1,7 @@
+i=imread('C:\Users\Ruthwik\Downloads\smple.tif')
+i=rgb2gray(i)
+imshow(i)
+j=imnoise(i,'salt & pepper',0.02)
+figure,imshow(j);
+k=colfilt(j,[3 3],'sliding',@median);
+figure,imshow(k);
