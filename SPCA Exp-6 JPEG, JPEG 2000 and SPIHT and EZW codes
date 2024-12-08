@@ -1,0 +1,32 @@
+img = imread('cameraman.tif');
+if size(img, 3) == 3, img = rgb2gray(img); end
+% Display Original Image
+figure, imshow(img), title('Original Image');
+% JPEG Compression
+imwrite(img, 'compressed_jpeg.jpg', 'Quality', 50);
+jpeg_img = imread('compressed_jpeg.jpg');
+figure, imshow(jpeg_img), title('JPEG Compressed Image');
+% JPEG 2000 Compression
+imwrite(img, 'compressed_jpeg2000.jp2', 'CompressionRatio', 20);
+jpeg2000_img = imread('compressed_jpeg2000.jp2');
+figure, imshow(jpeg2000_img), title('JPEG 2000 Compressed Image');
+% SPIHT Compression
+wcompress('c', img, 'cameraman_spiht.wtc', 'spiht', 'maxloop', 10);
+decompressed_spiht = wcompress('u', 'cameraman_spiht.wtc');
+figure, imshow(uint8(decompressed_spiht)), title('SPIHT Compressed Image');
+% EZW Compression
+wcompress('c', img, 'cameraman_ezw.wtc', 'ezw', 'maxloop', 10);
+decompressed_ezw = wcompress('u', 'cameraman_ezw.wtc');
+figure, imshow(uint8(decompressed_ezw)), title('EZW Compressed Image');
+% Calculate PSNR
+original = double(img);
+jpeg_psnr = psnr(double(jpeg_img), original);
+jpeg2000_psnr = psnr(double(jpeg2000_img), original);
+spiht_psnr = psnr(double(decompressed_spiht), original);
+ezw_psnr = psnr(double(decompressed_ezw), original);
+% Display PSNR Results
+fprintf('PSNR Values:\n');
+fprintf('JPEG: %.2f dB\n', jpeg_psnr);
+fprintf('JPEG 2000: %.2f dB\n', jpeg2000_psnr);
+fprintf('SPIHT: %.2f dB\n', spiht_psnr);
+fprintf('EZW: %.2f dB\n', ezw_psnr);
