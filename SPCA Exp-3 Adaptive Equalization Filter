@@ -1,0 +1,17 @@
+fs = 44100;
+worN = logspace(log10(20), log10(20^3.3), 1000);
+[blpf, alp] = butter(2, 10000 / (fs / 2), 'low');
+G_ls = 10^(2 / 20); [bls, als] = shelf(200, 1.4, G_ls, fs);
+[bnotch, anotch] = iirnotch(880 / (fs / 2), 0.707);
+H_combined = abs(freqz(blpf, alp, worN, fs)) .* abs(freqz(bls, als, worN, fs)) .* abs(freqz(bnotch, anotch, worN, fs));
+figure; 
+semilogx(worN, 20 * log10(H_combined), 'k');
+title('Adaptive Equalization Filter'); 
+xlabel('Frequency (Hz)'); 
+ylabel('Magnitude (dB)');
+grid on;
+function [b, a] = shelf(f0, Q, G, fs)
+ A = sqrt(G); w0 = 2 * pi * f0 / fs; alpha = sin(w0) / (2 * Q);
+ b = [(A * (1 - cos(w0))) / 2, A * (1 - cos(w0)), (A * (1 - cos(w0))) / 2];
+ a = [1 + alpha, -2 * cos(w0), 1 - alpha];
+end 
