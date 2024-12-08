@@ -1,0 +1,6 @@
+a=imread('smple.tif')
+imshow(a)
+j=imnoise(a,'salt & pepper',0.02)
+figure,imshow(j);
+k=imfilter(j,fspecial('average',3));
+figure,imshow(k);
